@@ -1,7 +1,6 @@
 /**
  * S3 utilities for handling file uploads and deletions
- * NOTE: AWS SDK v3 (@aws-sdk/client-s3) should be installed for production use
- * Install with: bun add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
+ * Uses AWS SDK v3 (@aws-sdk/client-s3) for production use
  * 
  * Requires environment variables:
  * - AWS_REGION
@@ -10,8 +9,21 @@
  * - S3_BUCKET_NAME
  */
 
+import { S3Client, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+
+// Initialize S3 client
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION || 'us-east-1',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+  },
+});
+
 /**
- * Generate a presigned POST URL for direct browser uploads to S3
+ * Generate a presigned PUT URL for direct browser uploads to S3
  * This allows users to upload directly to S3 without going through your server
  */
 export async function generatePresignedPostUrl(
@@ -28,15 +40,30 @@ export async function generatePresignedPostUrl(
     throw new Error('S3_BUCKET_NAME environment variable is not set');
   }
 
-  // TODO: Implement with AWS SDK v3 when installed
-  // For now, return a placeholder that will be replaced with actual implementation
-  return {
-    url: `https://${bucket}.s3.amazonaws.com/${key}`,
-    fields: {
-      key,
-      contentType,
-    },
-  };
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS credentials are not configured');
+  }
+
+  try {
+    const command = new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      ContentType: contentType,
+    });
+
+    const url = await getSignedUrl(s3Client, command, { expiresIn });
+
+    return {
+      url,
+      fields: {
+        key,
+        contentType,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating presigned POST URL:', error);
+    throw new Error('Failed to generate upload URL');
+  }
 }
 
 /**
@@ -53,9 +80,22 @@ export async function generatePresignedGetUrl(
     throw new Error('S3_BUCKET_NAME environment variable is not set');
   }
 
-  // TODO: Implement with AWS SDK v3 when installed
-  // For now, return a placeholder URL
-  return `https://${bucket}.s3.amazonaws.com/${key}`;
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS credentials are not configured');
+  }
+
+  try {
+    const command = new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+
+    const url = await getSignedUrl(s3Client, command, { expiresIn });
+    return url;
+  } catch (error) {
+    console.error('Error generating presigned GET URL:', error);
+    throw new Error('Failed to generate access URL');
+  }
 }
 
 /**
@@ -68,8 +108,21 @@ export async function deleteFromS3(key: string): Promise<void> {
     throw new Error('S3_BUCKET_NAME environment variable is not set');
   }
 
-  // TODO: Implement with AWS SDK v3 when installed
-  console.log(`Would delete ${key} from S3 bucket ${bucket}`);
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS credentials are not configured');
+  }
+
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+
+    await s3Client.send(command);
+  } catch (error) {
+    console.error('Error deleting from S3:', error);
+    throw new Error('Failed to delete file from S3');
+  }
 }
 
 /**

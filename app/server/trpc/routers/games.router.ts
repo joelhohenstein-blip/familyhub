@@ -9,8 +9,9 @@ import {
   leaderboards as leaderboardsTable,
   achievements as achievementsTable,
   userAchievements as userAchievementsTable,
+  gameInvitations as gameInvitationsTable,
 } from '~/db/games.schema';
-import { eq, and, desc, asc, sql } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gt } from 'drizzle-orm';
 
 /**
  * Games & Entertainment API Router
@@ -102,7 +103,18 @@ export const gamesRouter = router({
 
       // Send invitations to other players
       if (input.invitedUserIds?.length) {
-        // TODO: Implement invitation system via notifications
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+        
+        for (const recipientId of input.invitedUserIds) {
+          await db.insert(gameInvitationsTable).values({
+            id: crypto.randomUUID(),
+            sessionId,
+            senderId: ctx.user.id,
+            recipientId,
+            status: 'pending',
+            expiresAt,
+          });
+        }
       }
 
       return { sessionId };
@@ -402,6 +414,127 @@ export const gamesRouter = router({
       return {
         ...session[0],
         players,
+      };
+    }),
+
+  /**
+   * Get pending game invitations for a user
+   */
+  getPendingInvitations: procedure
+    .query(async ({ ctx }) => {
+      if (!ctx.user?.id) throw new Error('Not authenticated');
+
+      const invitations = await db
+        .select()
+        .from(gameInvitationsTable)
+        .where(
+          and(
+            eq(gameInvitationsTable.recipientId, ctx.user.id),
+            eq(gameInvitationsTable.status, 'pending'),
+            gt(gameInvitationsTable.expiresAt, new Date())
+          )
+        )
+        .orderBy(desc(gameInvitationsTable.createdAt));
+
+      return invitations;
+    }),
+
+  /**
+   * Accept a game invitation
+   */
+  acceptInvitation: procedure
+    .input(z.object({ invitationId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user?.id) throw new Error('Not authenticated');
+
+      const invitation = await db
+        .select()
+        .from(gameInvitationsTable)
+        .where(eq(gameInvitationsTable.id, input.invitationId))
+        .limit(1);
+
+      if (!invitation[0]) throw new Error('Invitation not found');
+      if (invitation[0].recipientId !== ctx.user.id) throw new Error('Not authorized');
+      if (invitation[0].status !== 'pending') throw new Error('Invitation already responded');
+
+      // Update invitation status
+      await db
+        .update(gameInvitationsTable)
+        .set({
+          status: 'accepted',
+          respondedAt: new Date(),
+        })
+        .where(eq(gameInvitationsTable.id, input.invitationId));
+
+      // Add user to game session
+      const playerId = crypto.randomUUID();
+      await db.insert(gamePlayersTable).values({
+        id: playerId,
+        sessionId: invitation[0].sessionId,
+        userId: ctx.user.id,
+      });
+
+      return { success: true, playerId };
+    }),
+
+  /**
+   * Decline a game invitation
+   */
+  declineInvitation: procedure
+    .input(z.object({ invitationId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.user?.id) throw new Error('Not authenticated');
+
+      const invitation = await db
+        .select()
+        .from(gameInvitationsTable)
+        .where(eq(gameInvitationsTable.id, input.invitationId))
+        .limit(1);
+
+      if (!invitation[0]) throw new Error('Invitation not found');
+      if (invitation[0].recipientId !== ctx.user.id) throw new Error('Not authorized');
+      if (invitation[0].status !== 'pending') throw new Error('Invitation already responded');
+
+      // Update invitation status
+      await db
+        .update(gameInvitationsTable)
+        .set({
+          status: 'declined',
+          respondedAt: new Date(),
+        })
+        .where(eq(gameInvitationsTable.id, input.invitationId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Get invitation history for a user
+   */
+  getInvitationHistory: procedure
+    .input(z.object({
+      limit: z.number().default(20),
+      offset: z.number().default(0),
+    }))
+    .query(async ({ input, ctx }) => {
+      if (!ctx.user?.id) throw new Error('Not authenticated');
+
+      const invitations = await db
+        .select()
+        .from(gameInvitationsTable)
+        .where(eq(gameInvitationsTable.recipientId, ctx.user.id))
+        .limit(input.limit)
+        .offset(input.offset)
+        .orderBy(desc(gameInvitationsTable.createdAt));
+
+      const total = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(gameInvitationsTable)
+        .where(eq(gameInvitationsTable.recipientId, ctx.user.id));
+
+      return {
+        items: invitations,
+        total: total[0]?.count || 0,
+        hasMore: (input.offset + input.limit) < (total[0]?.count || 0),
       };
     }),
 });

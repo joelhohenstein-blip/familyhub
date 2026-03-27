@@ -1,5 +1,6 @@
 import { redirect } from "react-router";
 import { callTrpc } from "../../utils/trpc.server";
+import { requireAdmin } from "../../utils/admin.server";
 import { AdminDashboard } from "../../components/admin/AdminDashboard";
 import { SidebarProvider } from "../../components/ui/sidebar";
 import { AppSidebar } from "../../components/app-sidebar";
@@ -15,10 +16,8 @@ export async function loader({ request }: { request: Request }) {
     return redirect("/login");
   }
 
-  // TODO: Add admin role verification
-  // if (user?.role !== "admin") {
-  //   return redirect("/dashboard");
-  // }
+  // Verify admin role
+  requireAdmin(user);
 
   return { user };
 }

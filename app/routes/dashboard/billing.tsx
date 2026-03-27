@@ -6,6 +6,7 @@ import { Heart, DollarSign, Download, AlertCircle, TrendingUp } from "lucide-rea
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { TierComparison } from "~/components/billing/TierComparison";
+import { trpc } from "~/utils/trpc";
 
 interface Tier {
   id: string;
@@ -54,92 +55,95 @@ export default function BillingDashboard() {
     return null;
   }
 
-  useEffect(() => {
-    // Load tiers and subscription data
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        // TODO: Load from tRPC endpoints
-        // For now, using mock data
-        setTiers([
-          {
-            id: "free",
-            name: "Free",
-            description: "Perfect for getting started",
-            priceMonthly: 0,
-            priceYearly: 0,
-            features: {
-              messaging: true,
-              photo_gallery: true,
-              basic_video_calls: true,
-              weather_display: true,
-            },
-            maxFamilyMembers: 5,
-            maxStorageGB: 5,
-            maxMediaLibraryItems: 100,
-            displayOrder: 0,
-          },
-          {
-            id: "pro",
-            name: "Pro",
-            description: "For growing families",
-            priceMonthly: 999,
-            priceYearly: 9990,
-            features: {
-              messaging: true,
-              photo_gallery: true,
-              basic_video_calls: true,
-              hd_video_calls: true,
-              streaming_services: true,
-              weather_display: true,
-              media_upload: true,
-              event_calendar: true,
-            },
-            maxFamilyMembers: 15,
-            maxStorageGB: 100,
-            maxMediaLibraryItems: 1000,
-            trialDays: 14,
-            displayOrder: 1,
-          },
-          {
-            id: "enterprise",
-            name: "Enterprise",
-            description: "For large families",
-            priceMonthly: 1999,
-            priceYearly: 19990,
-            features: {
-              messaging: true,
-              photo_gallery: true,
-              basic_video_calls: true,
-              hd_video_calls: true,
-              streaming_services: true,
-              weather_display: true,
-              media_upload: true,
-              event_calendar: true,
-              advanced_analytics: true,
-              priority_support: true,
-            },
-            maxFamilyMembers: null,
-            maxStorageGB: null,
-            maxMediaLibraryItems: null,
-            displayOrder: 2,
-          },
-        ]);
-        setCurrentTier("free");
-        // TODO: Load actual invoices from tRPC
-      } catch (error) {
-        console.error("Failed to load billing data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Load tiers from tRPC
+  const tiersQuery = trpc.billing.getAvailableTiersWithPricing.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
-    loadData();
-  }, []);
+  // Load current subscription
+  const subscriptionQuery = trpc.billing.checkSubscriptionStatus.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
+
+  // Load invoices from tRPC
+  const invoicesQuery = trpc.billing.getInvoices.useQuery(
+    { limit: 20, offset: 0 },
+    { refetchOnWindowFocus: false }
+  );
+
+  useEffect(() => {
+    // Update tiers when query completes
+    if (tiersQuery.data) {
+      setTiers(tiersQuery.data as Tier[]);
+    }
+  }, [tiersQuery.data]);
+
+  useEffect(() => {
+    // Update current tier when subscription query completes
+    if (subscriptionQuery.data) {
+      setCurrentTier(subscriptionQuery.data.tier || "free");
+    }
+  }, [subscriptionQuery.data]);
+
+  useEffect(() => {
+    // Update invoices when query completes
+    if (invoicesQuery.data) {
+      setInvoices(invoicesQuery.data.map(inv => ({
+        ...inv,
+        issuedAt: new Date(inv.issuedAt),
+        dueAt: inv.dueAt ? new Date(inv.dueAt) : null,
+        paidAt: inv.paidAt ? new Date(inv.paidAt) : null,
+      })) as Invoice[]);
+    }
+  }, [invoicesQuery.data]);
+
+  useEffect(() => {
+    // Set loading state based on query states
+    setLoading(tiersQuery.isLoading || subscriptionQuery.isLoading || invoicesQuery.isLoading);
+  }, [tiersQuery.isLoading, subscriptionQuery.isLoading, invoicesQuery.isLoading]);
+
+  // Mutation for selecting a tier
+  const selectTierMutation = trpc.billing.selectTier.useMutation({
+    onSuccess: (data) => {
+      setCurrentTier(data.tier);
+      // Show success message
+      alert(`Successfully selected ${data.tier} tier!`);
+    },
+    onError: (error) => {
+      alert(`Error: ${error.message}`);
+    },
+  });
+
+  // Mutation for initiating Stripe checkout
+  const checkoutMutation = trpc.billing.initiateStripeCheckout.useMutation({
+    onSuccess: (data) => {
+      if (data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else if ('message' in data) {
+        alert(data.message || "Checkout initiated");
+      }
+    },
+    onError: (error) => {
+      alert(`Error: ${error.message}`);
+    },
+  });
 
   const handleSelectTier = (tierId: string) => {
-    // TODO: Implement tier selection with payment flow
-    console.log("Selecting tier:", tierId);
+    const tier = tiers.find((t) => t.id === tierId);
+    
+    if (!tier) {
+      alert("Tier not found");
+      return;
+    }
+
+    // If it's a free tier, use selectTier
+    if (tier.priceMonthly === 0 || tier.priceMonthly === null) {
+      selectTierMutation.mutate({ tierId });
+    } else {
+      // For paid tiers, initiate Stripe checkout
+      checkoutMutation.mutate({ planId: tierId });
+    }
   };
 
   const currentTierData = tiers.find((t) => t.id === currentTier);

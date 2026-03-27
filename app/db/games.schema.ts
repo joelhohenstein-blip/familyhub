@@ -182,6 +182,23 @@ export const watchPartyParticipants = pgTable('watch_party_participants', {
   index('watch_party_participants_user_idx').on(table.userId),
 ]);
 
+// Game invitations
+export const gameInvitations = pgTable('game_invitations', {
+  id: text('id').primaryKey(),
+  sessionId: text('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  senderId: text('sender_id').notNull().references(() => users.id),
+  recipientId: text('recipient_id').notNull().references(() => users.id),
+  status: varchar('status', { length: 20 }).default('pending').notNull(), // pending, accepted, declined, expired
+  expiresAt: timestamp('expires_at').notNull(),
+  respondedAt: timestamp('responded_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [
+  index('game_invitations_session_idx').on(table.sessionId),
+  index('game_invitations_sender_idx').on(table.senderId),
+  index('game_invitations_recipient_idx').on(table.recipientId),
+  index('game_invitations_status_idx').on(table.status),
+]);
+
 // Content recommendations
 export const recommendations = pgTable('recommendations', {
   id: text('id').primaryKey(),
@@ -225,4 +242,10 @@ export const musicPlaylistsRelations = relations(musicPlaylists, ({ one, many })
 export const watchPartiesRelations = relations(watchParties, ({ one, many }) => ({
   creator: one(users, { fields: [watchParties.createdBy], references: [users.id] }),
   participants: many(watchPartyParticipants),
+}));
+
+export const gameInvitationsRelations = relations(gameInvitations, ({ one }) => ({
+  session: one(gameSessions, { fields: [gameInvitations.sessionId], references: [gameSessions.id] }),
+  sender: one(users, { fields: [gameInvitations.senderId], references: [users.id] }),
+  recipient: one(users, { fields: [gameInvitations.recipientId], references: [users.id] }),
 }));

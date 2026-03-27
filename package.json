@@ -34,6 +34,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
+    "@aws-sdk/client-s3": "^3.1018.0",
+    "@aws-sdk/s3-request-presigner": "^3.1018.0",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@hookform/resolvers": "^5.2.2",
@@ -81,6 +83,7 @@
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.3.2",
     "arctic": "^3.7.0",
+    "argon2": "^0.44.0",
     "axios": "^1.13.4",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",

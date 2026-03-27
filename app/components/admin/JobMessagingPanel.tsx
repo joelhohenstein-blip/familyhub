@@ -28,92 +28,74 @@ export function JobMessagingPanel({ orderId, orderNumber, currentUserId }: JobMe
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch threads for order
-  // TODO: Implement getProjectThreadsForOrder in photoDigitization router
-  // const { data: threadsData, isLoading: isLoadingThreads, refetch: refetchThreads } = trpc.photoDigitization.getProjectThreadsForOrder.useQuery(
-  //   { orderId },
-  //   { enabled: !!orderId }
-  // );
-  const threadsData: { threads: Array<{ id: string; title: string; description?: string; createdAt: string; lastMessageAt?: string; messages?: Array<{ id: string; status: string }> }> } = { threads: [] };
-  const isLoadingThreads = false;
-  const refetchThreads = () => {};
+  const { data: threadsData, isLoading: isLoadingThreads, refetch: refetchThreads } = trpc.photoDigitization.getProjectThreadsForOrder.useQuery(
+    { orderId },
+    { enabled: !!orderId }
+  );
 
   // Fetch messages for selected thread
-  // TODO: Implement getThreadMessages in photoDigitization router
-  // const { data: messagesData, isLoading: isLoadingMessages, refetch: refetchMessages } = trpc.photoDigitization.getThreadMessages.useQuery(
-  //   { threadId: selectedThreadId || '' },
-  //   { enabled: !!selectedThreadId }
-  // );
-  const messagesData = { messages: [] };
-  const isLoadingMessages = false;
-  const refetchMessages = () => {};
+  const { data: messagesData, isLoading: isLoadingMessages, refetch: refetchMessages } = trpc.photoDigitization.getThreadMessages.useQuery(
+    { threadId: selectedThreadId || '', limit: 50, offset: 0 },
+    { enabled: !!selectedThreadId }
+  );
 
   // Create thread mutation
-  // TODO: Implement createProjectThread in photoDigitization router
-  // const createThreadMutation = trpc.photoDigitization.createProjectThread.useMutation({
-  //   onSuccess: () => {
-  //     toast.success('Thread created successfully');
-  //     setNewThreadTitle('');
-  //     setNewThreadDescription('');
-  //     setIsCreateThreadDialogOpen(false);
-  //     refetchThreads();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(`Failed to create thread: ${error.message}`);
-  //   },
-  // });
-  const createThreadMutation = { mutate: (_data: any) => {}, isPending: false };
+  const createThreadMutation = trpc.photoDigitization.createProjectThread.useMutation({
+    onSuccess: () => {
+      toast.success('Thread created successfully');
+      setNewThreadTitle('');
+      setNewThreadDescription('');
+      setIsCreateThreadDialogOpen(false);
+      refetchThreads();
+    },
+    onError: (error) => {
+      toast.error(`Failed to create thread: ${error.message}`);
+    },
+  });
 
   // Send message mutation
-  // TODO: Implement sendThreadMessage in photoDigitization router
-  // const sendMessageMutation = trpc.photoDigitization.sendThreadMessage.useMutation({
-  //   onSuccess: () => {
-  //     toast.success('Message sent successfully');
-  //     setMessageContent('');
-  //     refetchMessages();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(`Failed to send message: ${error.message}`);
-  //   },
-  // });
-  const sendMessageMutation = { mutate: (_data: any) => {}, isPending: false };
+  const sendMessageMutation = trpc.photoDigitization.postThreadMessage.useMutation({
+    onSuccess: () => {
+      toast.success('Message sent successfully');
+      setMessageContent('');
+      refetchMessages();
+    },
+    onError: (error) => {
+      toast.error(`Failed to send message: ${error.message}`);
+    },
+  });
 
   // Mark message as read mutation
-  // TODO: Implement markMessageAsRead in photoDigitization router
-  // const markAsReadMutation = trpc.photoDigitization.markMessageAsRead.useMutation({
-  //   onSuccess: (messageId) => {
-  //     setMarkedAsReadMessageIds(prev => new Set([...prev, messageId]));
-  //   },
-  //   onError: (error) => {
-  //     console.error('Failed to mark message as read:', error);
-  //   },
-  // });
-  const markAsReadMutation = { mutate: (_data: any) => {}, isPending: false };
+  const markAsReadMutation = trpc.photoDigitization.markThreadMessageAsRead.useMutation({
+    onSuccess: () => {
+      // Message marked as read successfully
+    },
+    onError: (error) => {
+      console.error('Failed to mark message as read:', error);
+    },
+  });
 
   // Delete message mutation
-  // TODO: Implement deleteThreadMessage in photoDigitization router
-  // const deleteMessageMutation = trpc.photoDigitization.deleteThreadMessage.useMutation({
-  //   onSuccess: () => {
-  //     toast.success('Message deleted successfully');
-  //     refetchMessages();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(`Failed to delete message: ${error.message}`);
-  //   },
-  // });
-  const deleteMessageMutation = { mutate: (_data: any) => {}, isPending: false };
+  const deleteMessageMutation = trpc.photoDigitization.deleteThreadMessage.useMutation({
+    onSuccess: () => {
+      toast.success('Message deleted successfully');
+      refetchMessages();
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete message: ${error.message}`);
+    },
+  });
 
   // Edit message mutation
-  // TODO: Implement editThreadMessage in photoDigitization router
-  // const editMessageMutation = trpc.photoDigitization.editThreadMessage.useMutation({
-  //   onSuccess: () => {
-  //     toast.success('Message updated successfully');
-  //     refetchMessages();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(`Failed to update message: ${error.message}`);
-  //   },
-  // });
-  const editMessageMutation = { mutate: (_data: any) => {}, isPending: false };
+  const editMessageMutation = trpc.photoDigitization.editThreadMessage.useMutation({
+    onSuccess: () => {
+      toast.success('Message updated successfully');
+      refetchMessages();
+    },
+    onError: (error) => {
+      toast.error(`Failed to update message: ${error.message}`);
+    },
+  });
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -172,7 +154,7 @@ export function JobMessagingPanel({ orderId, orderNumber, currentUserId }: JobMe
     sendMessageMutation.mutate({
       threadId: selectedThreadId,
       content: messageContent,
-      isCustomerVisible: true,
+      attachmentUrls: undefined,
     });
   };
 

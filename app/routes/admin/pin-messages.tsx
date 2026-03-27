@@ -1,5 +1,6 @@
 import { redirect } from "react-router";
 import { callTrpc } from "../../utils/trpc.server";
+import { requireAdmin } from "../../utils/admin.server";
 import { PinMessagesPanel } from "../../components/admin/PinMessagesPanel";
 
 export async function loader({ request }: { request: Request }) {
@@ -10,9 +11,10 @@ export async function loader({ request }: { request: Request }) {
     return redirect("/login");
   }
 
-  // TODO: Add admin role verification for the family
-  // Admin role verification should be done at the component level
-  // since different families may have different admins
+  // Verify admin role
+  // Note: Pin messages management requires admin privileges
+  // Family-level admin checks can be added at the component level if needed
+  requireAdmin(user);
 
   return { user };
 }
