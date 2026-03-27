@@ -1,0 +1,11 @@
+node_modules/
+.git/
+build/
+dist/
+coverage/
+.next/
+.cache/
+*.log
+.env
+.env.*
+

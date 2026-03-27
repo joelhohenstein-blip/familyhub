@@ -1,0 +1,43 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for clarity -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#f94c8f;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#00bcd4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Four hands arranged in circle forming heart -->
+  <!-- Top hand (orange) -->
+  <g transform="translate(100, 100) rotate(0)">
+    <path d="M 0 -50 Q -15 -40 -20 -20 Q -15 -10 0 -5 Q 15 -10 20 -20 Q 15 -40 0 -50 Z" 
+          fill="#ff6b35" opacity="0.9"/>
+  </g>
+  
+  <!-- Right hand (rose) -->
+  <g transform="translate(100, 100) rotate(90)">
+    <path d="M 0 -50 Q -15 -40 -20 -20 Q -15 -10 0 -5 Q 15 -10 20 -20 Q 15 -40 0 -50 Z" 
+          fill="#f94c8f" opacity="0.9"/>
+  </g>
+  
+  <!-- Bottom hand (teal) -->
+  <g transform="translate(100, 100) rotate(180)">
+    <path d="M 0 -50 Q -15 -40 -20 -20 Q -15 -10 0 -5 Q 15 -10 20 -20 Q 15 -40 0 -50 Z" 
+          fill="#00bcd4" opacity="0.9"/>
+  </g>
+  
+  <!-- Left hand (amber/orange accent) -->
+  <g transform="translate(100, 100) rotate(270)">
+    <path d="M 0 -50 Q -15 -40 -20 -20 Q -15 -10 0 -5 Q 15 -10 20 -20 Q 15 -40 0 -50 Z" 
+          fill="#ffb74d" opacity="0.9"/>
+  </g>
+  
+  <!-- Central heart shape -->
+  <path d="M 100 85 C 100 85 85 70 75 70 C 65 70 60 80 60 90 C 60 110 100 135 100 135 C 100 135 140 110 140 90 C 140 80 135 70 125 70 C 115 70 100 85 100 85 Z" 
+        fill="url(#grad1)" opacity="0.8"/>
+  
+  <!-- Outer circle outline for definition -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad1)" stroke-width="1.5" opacity="0.5"/>
+</svg>

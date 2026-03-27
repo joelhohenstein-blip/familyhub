@@ -1,0 +1,8 @@
+import{t as e}from"./createLucideIcon-BGHIVywy.js";
+/**
+* @license lucide-react v0.562.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var r=e("code-xml",[["path",{d:"m18 16 4-4-4-4",key:"1inbqp"}],["path",{d:"m6 8-4 4 4 4",key:"15zrgr"}],["path",{d:"m14.5 4-5 16",key:"e7oirm"}]]);export{r as t};

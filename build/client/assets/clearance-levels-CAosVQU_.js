@@ -1,0 +1,1 @@
+import{P as a,t as e}from"./jsx-runtime-DuEApJdL.js";import{t as s}from"./ClearanceLevelManagementPanel-D-FVM62U.js";var r=e(),t=a(function(){return(0,r.jsx)("div",{className:"min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-8",children:(0,r.jsx)("div",{className:"max-w-4xl mx-auto",children:(0,r.jsx)(s,{})})})});export{t as default};

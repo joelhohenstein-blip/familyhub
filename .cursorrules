@@ -1,0 +1,674 @@
+# React Router v7 Application - Claude Instructions
+
+## Project Overview
+Modern full-stack React Router v7 application with:
+- **Framework**: React Router v7 (Framework Mode) - formerly Remix
+- **Frontend**: React 18 + TypeScript + Tailwind CSS
+- **Backend**: tRPC for type-safe APIs
+- **Database**: PostgreSQL with Drizzle ORM
+- **UI**: shadcn/ui component library
+- **Real-time**: WebSocket + tRPC Subscriptions
+- **Build Tool**: Vite
+
+## MANDATORY Workflow
+
+**For ANY code task (95% of cases):**
+1. **NEVER use Read/Edit/Write directly for code files**
+2. **Use ast-grep FIRST** - `find_code` or `dump_syntax_tree` to analyze structure
+3. **Use ast-grep Extended** - `rewrite_code` or `batch_transform_files` to make changes
+4. Lint after changes
+5. Run type checks/tests before finishing
+
+**Only use Read/Edit/Write for:**
+- Non-code files (markdown, JSON config, etc.)
+- Trivial typo fixes in comments
+- String updates
+
+## Available MCP Tools
+
+### ast-grep (Structural Code Search)
+- `find_code` - Find code patterns by AST structure
+- `dump_syntax_tree` - View AST before editing
+- `find_code_by_rule` - Complex YAML-based pattern matching
+- `test_match_code_rule` - Test patterns before applying
+
+### ast-grep Extended (Code Transformation)
+- `rewrite_code` - Transform code with pattern/rewrite
+- `scan_with_rule` - Lint code with custom rules
+- `auto_fix_with_rule` - Automatically fix code issues
+- `batch_transform_files` - Transform multiple files at once
+- `find_and_analyze` - Find patterns with context
+- `batch_find_code` - **PARALLEL** search for multiple patterns at once
+
+### Exa (External Code Search)
+- `get_code_context` - Search GitHub, Stack Overflow, and docs for code examples
+
+### Lint (Code Quality & Formatting - WITH CACHING)
+- `check_types` - TypeScript type checking with incremental caching (~5s after first run)
+- `lint_javascript` - Lint JS/TS files with ESLint (cached)
+- `format_code` - Format JS/TS (Prettier) or Python (Black)
+- `check_types` - TypeScript type checking (incremental)
+
+## Project Structure
+
+```
+/app
+├── routes.ts           # Route configuration (React Router v7)
+├── /routes             # Route modules
+│   ├── home.tsx       # Index route
+│   └── api.trpc.$.tsx # tRPC API route
+├── /components         # React components
+│   └── /ui            # shadcn/ui components
+├── /server            # Server-side code
+│   ├── /trpc          # tRPC server
+│   │   ├── root.ts    # tRPC router root
+│   │   ├── trpc.ts    # tRPC setup
+│   │   ├── context.ts # tRPC context
+│   │   └── /routers   # API routers (chat, todo, product)
+│   └── websocket.server.ts # WebSocket server
+├── /db                # Database layer
+│   ├── index.server.ts # Drizzle connection
+│   └── /schema        # Drizzle schemas (chat, todos, products)
+└── /utils             # Shared utilities
+    ├── trpc.ts        # tRPC client setup
+    └── emitter.server.ts # Event emitter for real-time
+```
+
+### Key Files
+- **`routes.ts`** - Route configuration (React Router v7 specific)
+- **`root.tsx`** - Root layout with tRPC provider
+- **`entry.server.tsx`** - Server-side rendering entry
+- **`entry.client.tsx`** - Client-side hydration entry
+- **`vite.config.ts`** - Vite configuration with React Router plugin
+
+## React Router v7 Patterns
+
+### 1. Route Configuration (`app/routes.ts`)
+
+React Router v7 uses a **centralized route config** instead of file-based routing:
+
+```typescript
+import { type RouteConfig, index, route } from "@react-router/dev/routes";
+
+export default [
+  index("routes/home.tsx"),
+  route("api/trpc/*", "routes/api.trpc.$.tsx"),
+  route("products/:id", "routes/product.tsx"),
+] satisfies RouteConfig;
+```
+
+**Pattern:**
+- `index()` - Root/home route
+- `route(path, file)` - Define routes with params
+- `*` - Catch-all/splat routes
+- `:param` - Dynamic parameters
+
+### 2. Route Modules
+
+Each route file can export:
+
+```typescript
+import type { Route } from "./+types/home";
+
+// Meta tags (SEO)
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "My Page" },
+    { name: "description", content: "Page description" }
+  ];
+}
+
+// Server-side data loading
+export async function loader({ params, request }: Route.LoaderArgs) {
+  const data = await fetchData(params.id);
+  return { data };
+}
+
+// Form submissions / mutations
+export async function action({ request, params }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const result = await saveData(formData);
+  return { success: true, result };
+}
+
+// Client component
+export default function MyRoute({ loaderData }: Route.ComponentProps) {
+  return <div>{loaderData.data}</div>;
+}
+```
+
+**Key Differences from Remix:**
+- Import from `"react-router"` instead of `"@remix-run/react"`
+- Type imports from `"./+types/routeName"` for type safety
+- Same patterns for loaders/actions
+
+### 3. Hooks (React Router)
+
+```typescript
+import { useLoaderData, useActionData, useFetcher, useNavigation } from "react-router";
+
+function MyComponent() {
+  const data = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+  const fetcher = useFetcher();
+
+  return <div>{data.value}</div>;
+}
+```
+
+## tRPC Patterns
+
+### 1. tRPC Router Definition
+
+```typescript
+// app/server/trpc/routers/chat.router.ts
+import { z } from 'zod';
+import { router, procedure } from '../trpc';
+import { observable } from '@trpc/server/observable';
+
+export const chatRouter = router({
+  // Query - Read data
+  getMessages: procedure
+    .input(z.object({ chatId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const messages = await ctx.db.select()
+        .from(chatMessages)
+        .where(eq(chatMessages.chatId, input.chatId));
+      return { messages };
+    }),
+
+  // Mutation - Write data
+  sendMessage: procedure
+    .input(z.object({
+      chatId: z.string(),
+      message: z.string()
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const [newMessage] = await ctx.db.insert(chatMessages)
+        .values({ chatId: input.chatId, content: input.message })
+        .returning();
+      return { success: true, messageId: newMessage.id };
+    }),
+
+  // Subscription - Real-time updates
+  onChatUpdate: procedure
+    .input(z.object({ chatId: z.string() }))
+    .subscription(({ input }) => {
+      return observable((emit) => {
+        const onUpdate = (data: any) => {
+          if (data.chatId === input.chatId) {
+            emit.next(data);
+          }
+        };
+        emitter.on('chat-update', onUpdate);
+        return () => emitter.off('chat-update', onUpdate);
+      });
+    }),
+});
+```
+
+### 2. tRPC Client Usage
+
+```typescript
+// In React components
+import { trpc } from "~/utils/trpc";
+
+function ChatComponent() {
+  const [chatId] = useState("chat-123");
+  const [isClient, setIsClient] = useState(false);
+  const [liveMessages, setLiveMessages] = useState([]);
+
+  useEffect(() => setIsClient(true), []);
+
+  // Query - Fetch data
+  const { data } = trpc.chat.getMessages.useQuery(
+    { chatId },
+    { enabled: isClient } // Disable on server for SSR
+  );
+
+  // Mutation - Send data
+  const sendMessage = trpc.chat.sendMessage.useMutation({
+    onSuccess: () => console.log("Message sent!"),
+  });
+
+  // Subscription - Real-time updates
+  trpc.chat.onChatUpdate.useSubscription(
+    { chatId },
+    {
+      enabled: isClient, // Client-side only!
+      onData: (data) => {
+        setLiveMessages([...data.messages]); // Force re-render
+      },
+    }
+  );
+
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      sendMessage.mutate({ chatId, message: "Hello" });
+    }}>
+      {liveMessages.map(msg => <div key={msg.id}>{msg.content}</div>)}
+    </form>
+  );
+}
+```
+
+**IMPORTANT for Subscriptions:**
+- ✅ Always use `enabled: isClient` to prevent SSR errors
+- ✅ Use local state (`useState`) to trigger re-renders
+- ✅ Create new arrays with spread `[...data]` to force updates
+- ❌ Never run subscriptions during server-side rendering
+
+### 3. tRPC + WebSocket Setup
+
+```typescript
+// app/utils/trpc.ts
+export function createTRPCClient() {
+  const wsUrl = `ws://${window.location.host}/api/ws`;
+
+  const wsClient = createWSClient({ url: wsUrl });
+
+  return trpc.createClient({
+    links: [
+      splitLink({
+        condition: (op) => op.type === 'subscription',
+        true: wsLink({ client: wsClient }),    // WebSocket for subscriptions
+        false: httpBatchLink({ url: '/api/trpc' }), // HTTP for queries/mutations
+      }),
+    ],
+  });
+}
+```
+
+## Real-Time Patterns
+
+### Event Emitter Pattern
+
+```typescript
+// app/utils/emitter.server.ts
+import { EventEmitter } from 'events';
+export const emitter = new EventEmitter();
+
+// In your router
+emitter.emit('chat-update', { chatId, messages });
+
+// In subscription
+emitter.on('chat-update', onUpdate);
+```
+
+### Streaming Response Pattern
+
+```typescript
+async function simulateStreamingResponse(messageId, chatId, db) {
+  const response = "Hello world";
+
+  for (let i = 0; i < response.length; i++) {
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    const currentContent = response.substring(0, i + 1);
+
+    await db.update(chatMessages)
+      .set({ content: currentContent })
+      .where(eq(chatMessages.id, messageId));
+
+    const allMessages = await db.select()
+      .from(chatMessages)
+      .where(eq(chatMessages.chatId, chatId));
+
+    emitter.emit("chat-update", { chatId, messages: allMessages });
+  }
+}
+```
+
+## Drizzle ORM Patterns
+
+### 1. Schema Definition
+
+```typescript
+// app/db/schema/todos.ts
+import { pgTable, uuid, varchar, text, boolean, timestamp } from 'drizzle-orm/pg-core';
+
+export const todos = pgTable('todos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  completed: boolean('completed').default(false).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export type Todo = typeof todos.$inferSelect;
+export type NewTodo = typeof todos.$inferInsert;
+```
+
+### 2. Database Queries
+
+```typescript
+import { db } from '~/db/index.server';
+import { todos } from '~/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
+
+// Select all
+const allTodos = await db.select().from(todos);
+
+// Select with where
+const completedTodos = await db.select()
+  .from(todos)
+  .where(eq(todos.completed, true));
+
+// Insert
+const [newTodo] = await db.insert(todos)
+  .values({ title: "New task" })
+  .returning();
+
+// Update
+await db.update(todos)
+  .set({ completed: true })
+  .where(eq(todos.id, todoId));
+
+// Delete
+await db.delete(todos)
+  .where(eq(todos.id, todoId));
+```
+
+### 3. Database Scripts
+
+```bash
+# Push schema changes to database
+bun run db:push
+
+# Generate migrations
+bun run drizzle:generate
+
+# Seed database
+bun run db:seed
+
+# Reset database (wipe + push + seed)
+bun run db:reset
+```
+
+## shadcn/ui Patterns
+
+### 1. Using Components
+
+```typescript
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Card } from "~/components/ui/card";
+import { ScrollArea } from "~/components/ui/scroll-area";
+
+export default function MyComponent() {
+  return (
+    <Card className="p-4">
+      <Input placeholder="Enter text..." />
+      <Button>Submit</Button>
+      <ScrollArea className="h-96">
+        {/* Content */}
+      </ScrollArea>
+    </Card>
+  );
+}
+```
+
+### 2. Styling with Tailwind
+
+```typescript
+// Use cn() utility for conditional classes
+import { cn } from "~/lib/utils";
+
+<div className={cn(
+  "rounded-lg p-4",
+  isActive && "bg-blue-500",
+  isDisabled && "opacity-50"
+)}>
+  Content
+</div>
+```
+
+### 3. Form Patterns
+
+```typescript
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export default function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
+  };
+
+  return <form onSubmit={form.handleSubmit(onSubmit)}>...</form>;
+}
+```
+
+## SSR vs Client-Side Rendering
+
+### Server-Side Safe Patterns
+
+```typescript
+// ✅ Safe - runs on both server and client
+export async function loader() {
+  const data = await db.select().from(todos);
+  return { data };
+}
+
+// ❌ Unsafe - window is undefined on server
+export default function Component() {
+  const url = window.location.href; // Error!
+}
+
+// ✅ Safe - check for client-side
+export default function Component() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
+  return <div>{window.location.href}</div>;
+}
+```
+
+### Client-Only Hooks
+
+```typescript
+// Disable queries/subscriptions on server
+const { data } = trpc.chat.getMessages.useQuery(
+  { chatId },
+  { enabled: typeof window !== 'undefined' }
+);
+
+// Or use client flag
+const [isClient, setIsClient] = useState(false);
+useEffect(() => setIsClient(true), []);
+
+const subscription = trpc.chat.onUpdate.useSubscription(
+  { chatId },
+  { enabled: isClient }
+);
+```
+
+## Common Tasks
+
+### Adding a New Route
+
+1. **Update `routes.ts`:**
+```typescript
+export default [
+  index("routes/home.tsx"),
+  route("products/:id", "routes/product.tsx"), // ← Add this
+] satisfies RouteConfig;
+```
+
+2. **Create route file `app/routes/product.tsx`:**
+```typescript
+import type { Route } from "./+types/product";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const product = await db.select()
+    .from(products)
+    .where(eq(products.id, params.id));
+  return { product };
+}
+
+export default function Product({ loaderData }: Route.ComponentProps) {
+  return <div>{loaderData.product.name}</div>;
+}
+```
+
+### Adding a tRPC Endpoint
+
+1. **Create/update router `app/server/trpc/routers/product.router.ts`:**
+```typescript
+export const productRouter = router({
+  getById: procedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const product = await ctx.db.select()
+        .from(products)
+        .where(eq(products.id, input.id));
+      return { product };
+    }),
+});
+```
+
+2. **Add to root router `app/server/trpc/root.ts`:**
+```typescript
+export const appRouter = router({
+  chat: chatRouter,
+  product: productRouter, // ← Add this
+});
+```
+
+3. **Use in component:**
+```typescript
+const { data } = trpc.product.getById.useQuery({ id: "123" });
+```
+
+### Adding a Database Table
+
+1. **Create schema `app/db/schema/myTable.ts`:**
+```typescript
+export const myTable = pgTable('my_table', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 255 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+```
+
+2. **Export from index `app/db/schema/index.ts`:**
+```typescript
+export * from './myTable';
+```
+
+3. **Push to database:**
+```bash
+bun run db:push
+```
+
+## Development Workflow
+
+```bash
+# Install dependencies
+bun install
+
+# Run dev server (port 3000)
+bun run dev
+
+# Build for production
+bun run build
+
+# Start production server
+bun run start
+
+# Type check
+bun run typecheck
+
+# Database commands
+bun run db:push    # Push schema changes
+bun run db:seed    # Seed database
+bun run db:reset   # Reset database
+```
+
+## Environment Setup
+
+- **Database**: PostgreSQL on `localhost:5432`
+- **App**: Port `3000` (Vite dev server)
+- **WebSocket**: Port `3002` (proxied via Vite to `/api/ws`)
+- **tRPC API**: `/api/trpc` endpoint
+
+## Best Practices
+
+1. ✅ **Type Safety**: Use TypeScript and Zod for validation
+2. ✅ **Database**: Use Drizzle ORM, never raw SQL
+3. ✅ **APIs**: Use tRPC for end-to-end type safety
+4. ✅ **Real-time**: Use tRPC subscriptions + WebSocket for live updates
+5. ✅ **SSR**: Check for `typeof window !== 'undefined'` for client-only code
+6. ✅ **Subscriptions**: Always use `enabled: isClient` flag
+7. ✅ **State**: Use local state with subscriptions to force re-renders
+8. ✅ **Styling**: Use Tailwind CSS utilities + shadcn/ui components
+9. ✅ **Forms**: Use react-hook-form + Zod validation
+10. ✅ **Imports**: Import from `"react-router"` (not `@remix-run/*`)
+
+## Troubleshooting
+
+### "Cannot destructure property" error in SSR
+**Problem**: Hooks running on server where browser APIs don't exist
+
+**Solution**:
+```typescript
+const [isClient, setIsClient] = useState(false);
+useEffect(() => setIsClient(true), []);
+
+const query = trpc.myQuery.useQuery(input, { enabled: isClient });
+```
+
+### WebSocket connection fails
+**Problem**: Vite proxy not configured correctly
+
+**Solution**: Check `vite.config.ts`:
+```typescript
+proxy: {
+  '/api/ws': {
+    target: 'ws://localhost:3002',
+    ws: true,
+  }
+}
+```
+
+### Subscription doesn't update UI
+**Problem**: React not detecting changes in subscription data
+
+**Solution**: Use local state with new arrays:
+```typescript
+const [messages, setMessages] = useState([]);
+
+trpc.chat.onUpdate.useSubscription(
+  { chatId },
+  {
+    onData: (data) => {
+      setMessages([...data.messages]); // Create new array!
+    }
+  }
+);
+```
+
+### Type errors with Route types
+**Problem**: `./+types/routeName` not found
+
+**Solution**: Run type generation:
+```bash
+bun run typecheck  # This generates route types
+```

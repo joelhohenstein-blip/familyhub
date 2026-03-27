@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyHub - Responsive Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, '"'"'Segoe UI'"'"', sans-serif; background: #f5f5f5; padding: 20px; }
+        .viewport-container { margin: 20px 0; border: 2px solid #333; background: white; overflow: hidden; }
+        .device-label { background: #333; color: white; padding: 10px 15px; font-weight: bold; }
+        .iframe-wrapper { position: relative; width: 100%; background: white; }
+        iframe { border: none; display: block; }
+        
+        .mobile-375 { max-width: 375px; margin: 0 auto; }
+        .mobile-414 { max-width: 414px; margin: 0 auto; }
+        .tablet-768 { max-width: 768px; margin: 0 auto; }
+        
+        h1 { text-align: center; margin: 30px 0 20px; font-size: 28px; }
+    </style>
+</head>
+<body>
+    <h1>🎯 FamilyHub Responsive Design Test</h1>
+    
+    <!-- MOBILE 375px (iPhone SE) -->
+    <div class="viewport-container mobile-375">
+        <div class="device-label">📱 iPhone SE (375px)</div>
+        <iframe src="http://localhost:3000/" width="375" height="667" style="background: white;"></iframe>
+    </div>
+    
+    <!-- MOBILE 414px (iPhone 12) -->
+    <div class="viewport-container mobile-414">
+        <div class="device-label">📱 iPhone 12 (414px)</div>
+        <iframe src="http://localhost:3000/" width="414" height="896" style="background: white;"></iframe>
+    </div>
+    
+    <!-- TABLET 768px (iPad) -->
+    <div class="viewport-container tablet-768">
+        <div class="device-label">📱 iPad / Tablet (768px)</div>
+        <iframe src="http://localhost:3000/" width="768" height="1024" style="background: white;"></iframe>
+    </div>
+    
+    <!-- LOGIN PAGE MOBILE -->
+    <div class="viewport-container mobile-375">
+        <div class="device-label">📱 Login - iPhone SE (375px)</div>
+        <iframe src="http://localhost:3000/login" width="375" height="667" style="background: white;"></iframe>
+    </div>
+    
+    <!-- LOGIN PAGE TABLET -->
+    <div class="viewport-container tablet-768">
+        <div class="device-label">📱 Login - Tablet (768px)</div>
+        <iframe src="http://localhost:3000/login" width="768" height="1024" style="background: white;"></iframe>
+    </div>
+    
+</body>
+</html>
+EOF
+echo "✅ Test file created at /workspace/test-responsive.html"

@@ -1,0 +1,205 @@
+{
+  "login": {
+    "welcome": "Bienvenue sur Family Hub",
+    "subtitle": "Connectez-vous avec vos proches",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié?",
+    "noAccount": "Pas encore de compte?",
+    "haveAccount": "Déjà inscrit?",
+    "errors": {
+      "invalidEmail": "Veuillez entrer une adresse e-mail valide",
+      "passwordRequired": "Le mot de passe est requis",
+      "signInFailed": "Échec de la connexion. Veuillez réessayer."
+    }
+  },
+  "home": {
+    "title": "Family Hub",
+    "description": "Votre espace familial connecté",
+    "welcome": "Bienvenue sur votre Family Hub",
+    "subtitle": "Restez connecté avec votre famille",
+    "features": {
+      "messaging": {
+        "title": "Tableau de Messages",
+        "description": "Partagez des mises à jour et restez en contact"
+      },
+      "video": {
+        "title": "Vidéo et Audio",
+        "description": "Appels vidéo et audio bidirectionnels"
+      },
+      "media": {
+        "title": "Bibliothèque Médias",
+        "description": "Téléchargez et partagez des photos et des vidéos"
+      },
+      "entertainment": {
+        "title": "Cinéma",
+        "description": "Regardez du contenu en streaming gratuit"
+      },
+      "weather": {
+        "title": "Météo Locale",
+        "description": "Restez informé des conditions locales"
+      }
+    }
+  },
+  "navigation": {
+    "home": "Accueil",
+    "messages": "Messages",
+    "video": "Appel vidéo",
+    "media": "Médias",
+    "movies": "Films",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter",
+    "profile": "Profil"
+  },
+  "media": {
+    "title": "Galerie de Photos et Vidéos",
+    "upload": "Télécharger des Médias",
+    "uploadMedia": "Télécharger des Photos ou Vidéos",
+    "selectFile": "Sélectionnez un fichier",
+    "dragDrop": "Glissez et déposez des fichiers ici ou cliquez pour sélectionner",
+    "playVideo": "Lire la Vidéo",
+    "viewGallery": "Voir la Galerie",
+    "createAlbum": "Créer un Album",
+    "moveToAlbum": "Déplacer vers Album",
+    "album": "Album",
+    "albums": "Albums",
+    "photos": "Photos",
+    "videos": "Vidéos",
+    "allMedia": "Tous les Médias",
+    "emptyGallery": "Pas encore de photos ou vidéos. Commencez par télécharger des souvenirs!",
+    "emptyAlbum": "Cet album est vide. Déplacez quelques photos ou vidéos ici.",
+    "watchHistory": "Historique de Visionnage",
+    "lastWatchedPosition": "Dernière position",
+    "videoPlayback": "Lecture Vidéo",
+    "controls": {
+      "play": "Lire",
+      "pause": "Pause",
+      "mute": "Muet",
+      "unmute": "Activer le son",
+      "fullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "volume": "Volume"
+    },
+    "errors": {
+      "unsupportedFileType": "Type de fichier non supporté. Veuillez télécharger des fichiers JPEG, PNG, GIF, WebP, SVG, MP4, WebM, OGG, MOV ou AVI.",
+      "fileSizeExceeded": "La taille du fichier dépasse la limite de 10MB",
+      "uploadFailed": "Le téléchargement a échoué. Veuillez réessayer.",
+      "deleteFailed": "Échec de la suppression du fichier",
+      "invalidAlbumName": "Le nom de l'album est requis",
+      "albumCreationFailed": "Échec de la création de l'album",
+      "playbackError": "Erreur lors de la lecture de la vidéo. Veuillez réessayer.",
+      "retryPlayback": "Réessayer"
+    },
+    "confirmations": {
+      "deleteMedia": "Êtes-vous sûr de vouloir supprimer ce fichier?",
+      "deleteAlbum": "Êtes-vous sûr de vouloir supprimer cet album?"
+    },
+    "filters": {
+      "all": "Tous les Médias",
+      "images": "Photos Uniquement",
+      "videos": "Vidéos Uniquement"
+    },
+    "pagination": {
+      "loadMore": "Charger Plus",
+      "noMore": "Aucun autre média à charger"
+    }
+  },
+  "buttons": {
+    "startCall": "Démarrer un appel vidéo",
+    "sendMessage": "Envoyer un message",
+    "upload": "Télécharger",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "next": "Suivant",
+    "back": "Retour"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès",
+    "confirm": "Êtes-vous sûr?",
+    "language": "Langue",
+    "selectLanguage": "Sélectionner la langue"
+  },
+  "notifications": {
+    "languageFallback": "La langue de votre navigateur n'est pas supportée. L'anglais sera utilisé."
+  },
+  "onboarding": {
+    "title": "Bienvenue sur FamilyHub",
+    "subtitle": "Configurons votre famille. Suivez ces étapes pour commencer.",
+    "steps": {
+      "family": "Créer une Famille",
+      "avatar": "Ajouter un Avatar",
+      "invite": "Inviter des Membres",
+      "roles": "Définir les Rôles"
+    },
+    "family": {
+      "title": "Créez Votre Famille",
+      "subtitle": "Commencez par configurer le nom et la description de votre famille"
+    },
+    "avatar": {
+      "title": "Ajouter un Avatar Familial",
+      "description": "Téléchargez une photo pour représenter votre famille (optionnel)."
+    },
+    "invite": {
+      "title": "Inviter des Membres de la Famille",
+      "description": "Invitez des personnes à rejoindre votre famille (optionnel - vous pouvez les ajouter plus tard)."
+    },
+    "roles": {
+      "title": "Définir les Rôles des Membres",
+      "description": "Personnalisez les rôles et les permissions pour chaque membre"
+    },
+    "complete": {
+      "title": "C'est Fait!",
+      "description": "Votre famille est prête. Vous pouvez maintenant accéder à votre hub familial et gérer les membres."
+    },
+    "skip": "Ignorer pour l'instant",
+    "viewFamily": "Afficher Votre Famille"
+  },
+  "family": {
+    "avatar": "Avatar Familial",
+    "surname": "Nom de Famille",
+    "description": "Description Familiale"
+  },
+  "invite": {
+    "email": "Adresse E-mail",
+    "add": "Ajouter",
+    "list": "E-mails Invités",
+    "role": "Rôle"
+  },
+  "roles": {
+    "member": "Membre",
+    "guest": "Invité",
+    "admin": "Administrateur"
+  },
+  "invite": {
+    "processing": "Traitement de Votre Invitation",
+    "pleasewait": "Veuillez patienter pendant que nous vous ajoutons à la famille...",
+    "success": "Bienvenue!",
+    "successMessage": "Vous avez rejoint avec succès la famille. Vous êtes redirigé vers votre page familiale...",
+    "error": "Invitation Invalide",
+    "errorMessage": "Ce lien d'invitation est invalide, expiré ou a déjà été utilisé. Veuillez demander à l'administrateur de la famille de vous envoyer une nouvelle invitation."
+  },
+  "weather": {
+    "title": "Météo",
+    "loading": "Chargement...",
+    "refresh": "Actualiser",
+    "forecast": "Prévisions 4 Jours",
+    "wind": "Vitesse du Vent",
+    "humidity": "Humidité",
+    "feelsLike": "Ressenti",
+    "cachedData": "Données en cache d'il y a 5 minutes",
+    "noData": "Aucune donnée météo disponible. Veuillez activer l'accès à la localisation.",
+    "enterLocation": "Entrez une Localisation",
+    "searchPlaceholder": "Recherchez une ville ou une localisation",
+    "search": "Rechercher",
+    "searching": "Recherche en cours...",
+    "locationNotFound": "Localisation non trouvée. Veuillez essayer une autre recherche.",
+    "orEnableLocation": "Ou activez l'accès à la localisation du navigateur pour détecter automatiquement votre emplacement."
+  }
+}

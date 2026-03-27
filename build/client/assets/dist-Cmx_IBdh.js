@@ -1,0 +1,1 @@
+import{r}from"./chunk-DdE0VlT9.js";import{I as e}from"./jsx-runtime-DuEApJdL.js";var u=r(e(),1);function t(r){const e=u.useRef({value:r,previous:r});return u.useMemo(()=>(e.current.value!==r&&(e.current.previous=e.current.value,e.current.value=r),e.current.previous),[r])}export{t};

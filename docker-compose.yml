@@ -1,0 +1,132 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: family-hub-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-family_hub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-family_hub}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-family_hub} -d ${DB_NAME:-family_hub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - family-hub-network
+    restart: unless-stopped
+
+  # Redis for real-time messaging (WebSockets, Pusher cache)
+  redis:
+    image: redis:7-alpine
+    container_name: family-hub-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - family-hub-network
+    restart: unless-stopped
+
+  # Family Hub Web Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: family-hub-app
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${DB_USER:-family_hub}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-family_hub}
+      REDIS_URL: redis://redis:6379
+      PREDEV_DEPLOYMENT_URL: ${PREDEV_DEPLOYMENT_URL:-http://localhost:3000}
+      # Clerk authentication
+      CLERK_PUBLISHABLE_KEY: ${CLERK_PUBLISHABLE_KEY:-}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-}
+      # Jitsi for video/audio
+      JITSI_DOMAIN: ${JITSI_DOMAIN:-meet.jitsi.net}
+      # Streaming services configuration
+      PLUTO_API_URL: ${PLUTO_API_URL:-}
+      TUBI_API_URL: ${TUBI_API_URL:-}
+      ROKU_API_URL: ${ROKU_API_URL:-}
+      FREEVIEW_API_URL: ${FREEVIEW_API_URL:-}
+      # Weather API
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
+      # Pusher for real-time features
+      PUSHER_APP_ID: ${PUSHER_APP_ID:-}
+      PUSHER_KEY: ${PUSHER_KEY:-}
+      PUSHER_SECRET: ${PUSHER_SECRET:-}
+      PUSHER_CLUSTER: ${PUSHER_CLUSTER:-}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.react-router
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    networks:
+      - family-hub-network
+    restart: unless-stopped
+
+  # Optional: Adminer for database management
+  adminer:
+    image: adminer:latest
+    container_name: family-hub-adminer
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      - postgres
+    networks:
+      - family-hub-network
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+
+  # Optional: Redis Commander for Redis inspection
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: family-hub-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    depends_on:
+      - redis
+    networks:
+      - family-hub-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  family-hub-network:
+    driver: bridge

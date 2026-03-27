@@ -1,0 +1,42 @@
+# 
+
+export const donations = pgTable('donations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  amount: integer('amount').notNull(), // in cents
+  tierLabel: text('tier_label').notNull(),
+  stripeSessionId: text('stripe_session_id').notNull().unique(),
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  status: text('status').notNull().default('pending'), // pending, completed, failed
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+Error Reading Code
+
+
+**File Path:** {"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}
+
+
+**Error:** File not found: '{"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}'.
+Tried C4 nodes: {"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}, workspace/{"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}, /{"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}, /workspace/{"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}
+Tried CodeFiles: workspace/{"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}, {"stdout":"","stderr":"","exitCode":0,"command":"find /workspace/app -name '*.ts' | xargs grep -l 'export const users' | head -1","status":"completed"}
+
+**Possible reasons:**
+- Node ID or file path doesn't exist in the project
+- Node is a planned architecture element without implementation yet
+- Source file has been deleted
+- Invalid byte offset data
+- Line numbers out of range (endLine > file length)
+- startLine > endLine or startLine < 1
+- Must provide both startLine AND endLine together
+- Must provide either nodeId OR filePath
+
+**What to try:**
+- Verify the nodeId is correct (from search_project results)
+- Use search_project with filters: ["code_level"] to find implemented nodes only
+- If reading by file path, make sure the path is exact (e.g., "services/UserService.ts")
+- For line ranges: ensure both startLine and endLine are provided
+- For line ranges: ensure endLine doesn't exceed file length
+- Try readFullFile: true to see the entire file first
+- Use glob_files to find available files
+- Use grep_files to find matching lines with valid line numbers

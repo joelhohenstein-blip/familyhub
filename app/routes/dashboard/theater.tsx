@@ -1,0 +1,198 @@
+import React, { useState } from 'react';
+import { redirect, useLoaderData } from 'react-router';
+import { trpc } from '~/utils/trpc';
+import { callTrpc } from '~/utils/trpc.server';
+import { StreamingSourceCard } from '~/components/theater/StreamingSourceCard';
+import { StreamingPlayer } from '~/components/theater/StreamingPlayer';
+import { SourceSearch } from '~/components/theater/SourceSearch';
+import { AdminSourceManager } from '~/components/theater/AdminSourceManager';
+import { ParentalLockDialog } from '~/components/theater/ParentalLockDialog';
+import { Button } from '~/components/ui/button';
+import { Plus, Lock } from 'lucide-react';
+import { AppSidebar } from '~/components/app-sidebar';
+import { SiteHeader } from '~/components/site-header';
+import { SidebarInset, SidebarProvider } from '~/components/ui/sidebar';
+import type { Route } from './+types/theater';
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const caller = await callTrpc(request);
+  const { isSignedIn, user } = await caller.auth.me();
+
+  if (!isSignedIn) {
+    return redirect('/login');
+  }
+
+  let isAdmin = false;
+  let familyId = '';
+
+  // Get user's family and role
+  if (user?.id) {
+    try {
+      const families = await caller.families.getAll({});
+      if (families.families.length > 0) {
+        familyId = families.families[0].id;
+        // Check if user is admin in this family
+        const membersResult = await caller.familyMembers.getMembers({ familyId, page: 1, limit: 100 });
+        const currentMember = membersResult.members.find((m: any) => m.family_members.userId === user.id);
+        isAdmin = currentMember?.family_members.role === 'admin';
+      }
+    } catch (error) {
+      console.error('Error fetching family info:', error);
+    }
+  }
+
+  return { user, isSignedIn, isAdmin, familyId };
+}
+
+export default function TheaterPage() {
+  const loaderData = useLoaderData<typeof loader>();
+  const { user, isAdmin } = loaderData;
+
+  const [selectedSource, setSelectedSource] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [genre, setGenre] = useState('');
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [showParentalModal, setShowParentalModal] = useState(false);
+
+  // Fetch sources using the hook
+  const sourcesQuery = trpc.streaming.getSources.useQuery({
+    searchTerm,
+    genre,
+    availability: 'all',
+  });
+
+  const sources = (sourcesQuery.data || []) as any[];
+  const isLoading = sourcesQuery.isLoading;
+
+  // Filter sources based on search and genre (client-side as backup)
+  const filteredSources = sources.filter((source) => {
+    const matchesSearch =
+      !searchTerm ||
+      source.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (source.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
+
+    const matchesGenre = !genre || (source.genre?.includes(genre) ?? false);
+
+    return matchesSearch && matchesGenre;
+  });
+
+  const handleSourceAdded = (newSource: any) => {
+    sourcesQuery.refetch();
+    setShowAdminModal(false);
+  };
+
+  const handleSourceRemoved = (sourceId: string) => {
+    if (selectedSource?.id === sourceId) {
+      setSelectedSource(null);
+    }
+    sourcesQuery.refetch();
+  };
+
+  const handleSourcesReordered = (reorderedIds: string[]) => {
+    sourcesQuery.refetch();
+  };
+
+  return (
+    <SidebarProvider
+      style={{
+        "--sidebar-width": "16rem",
+        "--header-height": "3.5rem",
+      } as React.CSSProperties}
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader title="Streaming Theater" />
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-8">
+          {/* Main Content */}
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            {/* Search and Filters */}
+            <div className="mb-8">
+              <SourceSearch
+                onSearchChange={setSearchTerm}
+                onGenreChange={setGenre}
+                sources={sources}
+              />
+            </div>
+
+            {/* Player Section */}
+            {selectedSource && (
+              <div className="mb-8 rounded-lg border border-slate-700 bg-slate-800 p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-white">{selectedSource.name}</h2>
+                  <Button
+                    onClick={() => setSelectedSource(null)}
+                    variant="outline"
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    Close
+                  </Button>
+                </div>
+                <StreamingPlayer source={selectedSource} />
+              </div>
+            )}
+
+            {/* Sources Grid */}
+            {isLoading ? (
+              <div className="flex h-64 items-center justify-center">
+                <div className="text-center">
+                  <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-purple-500"></div>
+                  <p className="text-slate-400">Loading streaming sources...</p>
+                </div>
+              </div>
+            ) : filteredSources.length === 0 ? (
+              <div className="rounded-lg border border-slate-700 bg-slate-800/50 p-12 text-center">
+                <svg
+                  className="mx-auto mb-4 h-12 w-12 text-slate-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 10l-4 4m0 0l-4-4m4 4v12m7-13a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="mb-2 text-lg font-semibold text-white">No sources found</h3>
+                <p className="text-slate-400">
+                  {searchTerm || genre
+                    ? 'Try adjusting your search or filters'
+                    : 'Add streaming sources to get started'}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {filteredSources.map((source) => (
+                  <StreamingSourceCard
+                    key={source.id}
+                    source={source}
+                    onSelect={() => setSelectedSource(source)}
+                    onRemove={() => handleSourceRemoved(source.id)}
+                    isAdmin={isAdmin}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Admin Modal */}
+          {showAdminModal && (
+            <AdminSourceManager
+              onClose={() => setShowAdminModal(false)}
+              onSourceAdded={handleSourceAdded}
+              onSourceRemoved={handleSourceRemoved}
+              onSourcesReordered={handleSourcesReordered}
+              sources={sources}
+            />
+          )}
+
+          {/* Parental Lock Modal */}
+          {showParentalModal && (
+            <ParentalLockDialog onClose={() => setShowParentalModal(false)} sources={sources} />
+          )}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

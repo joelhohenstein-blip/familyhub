@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "rootDirs": [".", "./.react-router/types"]
+  },
+  "include": [
+    ".react-router/types/**/*",
+    "remix.env.d.ts",
+    "app/**/*",
+    "test-utils/**/*"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.js", "**/*.css", "**/*.html"]
+}

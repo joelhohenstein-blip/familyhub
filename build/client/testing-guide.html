@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Connect - Testing Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .date {
+            font-size: 0.9em;
+            color: #999;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            color: #0066cc;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .intro-text {
+            font-size: 1.05em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .test-url {
+            background: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .test-url strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #0066cc;
+        }
+        
+        .test-url a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .test-url a:hover {
+            text-decoration: underline;
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #0066cc;
+        }
+        
+        .feature-item strong {
+            color: #0066cc;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .feature-item p {
+            font-size: 0.95em;
+            color: #666;
+        }
+        
+        .test-section {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        .test-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .test-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .test-list li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .bug-reporting {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 6px;
+        }
+        
+        .bug-reporting h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .bug-info {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .bug-info ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .bug-info li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .bug-info li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #856404;
+            font-weight: bold;
+        }
+        
+        .severity-levels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .severity {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .severity strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .severity.critical {
+            border-left-color: #dc3545;
+        }
+        
+        .severity.critical strong {
+            color: #dc3545;
+        }
+        
+        .severity.high {
+            border-left-color: #fd7e14;
+        }
+        
+        .severity.high strong {
+            color: #fd7e14;
+        }
+        
+        .severity.medium {
+            border-left-color: #ffc107;
+        }
+        
+        .severity.medium strong {
+            color: #ffc107;
+        }
+        
+        .severity.low {
+            border-left-color: #28a745;
+        }
+        
+        .severity.low strong {
+            color: #28a745;
+        }
+        
+        .contact-info {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .contact-info p {
+            margin: 10px 0;
+            font-size: 1.05em;
+        }
+        
+        .contact-info a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #ddd;
+            color: #999;
+            font-size: 0.95em;
+        }
+        
+        .print-button {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .print-button button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .print-button button:hover {
+            background: #0052a3;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .print-button {
+                display: none;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+            }
+            
+            .test-section {
+                page-break-inside: avoid;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .features-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .severity-levels {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Family Connect</h1>
+            <p class="subtitle">Comprehensive Testing Guide</p>
+            <p class="date">Generated: <span id="date"></span></p>
+        </header>
+        
+        <div class="print-button">
+            <button onclick="window.print()">🖨️ Print as PDF</button>
+        </div>
+        
+        <section>
+            <h2>Quick Start</h2>
+            <p class="intro-text">
+                Welcome to the Family Connect testing program! This guide will walk you through all features and help you identify any issues. Your feedback is crucial to making Family Connect the best family communication platform.
+            </p>
+            
+            <div class="test-url">
+                <strong>Test Environment URL:</strong>
+                <a href="https://familyconnect.pre.dev" target="_blank">https://familyconnect.pre.dev</a>
+            </div>
+            
+            <p class="intro-text">
+                You will receive test account credentials via email. Each account has different roles (Admin, Parent, Child) to test various permission levels and features.
+            </p>
+        </section>
+        
+        <section>
+            <h2>Features to Test</h2>
+            <div class="features-list">
+                <div class="feature-item">
+                    <strong>✓ Authentication</strong>
+                    <p>Sign up, login, password reset, email verification</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Family Management</strong>
+                    <p>Create families, invite members, assign roles</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Messaging</strong>
+                    <p>Send/receive messages, pin, archive, search</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Video Calls</strong>
+                    <p>Initiate calls, quality testing, call history</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Media & Photos</strong>
+                    <p>Upload, gallery, theater mode, sharing</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Timeline & Memories</strong>
+                    <p>Create entries, share timelines, public access</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Organization</strong>
+                    <p>Events, announcements, shopping lists, digests</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Settings</strong>
+                    <p>Profile, preferences, notifications, privacy</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Admin Features</strong>
+                    <p>Family management, billing, moderation</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Cross-Device</strong>
+                    <p>Mobile, tablet, desktop, responsive design</p>
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Performance</strong>
+                    <p>Slow network, offline, large files, edge cases</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Testing Checklist</h2>
+            
+            <div class="test-section">
+                <h3>1. Authentication & Onboarding</h3>
+                <ul class="test-list">
+                    <li>Sign up with email and password</li>
+                    <li>Verify email confirmation</li>
+                    <li>Login with credentials</li>
+                    <li>Password reset flow</li>
+                    <li>Create first family</li>
+                    <li>Complete profile setup</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>2. Family Management</h3>
+                <ul class="test-list">
+                    <li>Create a new family</li>
+                    <li>Invite family members via email</li>
+                    <li>Accept family invitation</li>
+                    <li>Assign roles (Admin, Parent, Child)</li>
+                    <li>Change member roles</li>
+                    <li>Remove family members</li>
+                    <li>View family member list</li>
+                    <li>Edit family settings</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>3. Messaging & Communication</h3>
+                <ul class="test-list">
+                    <li>Send text message</li>
+                    <li>Send message with emoji</li>
+                    <li>Send message with file attachment</li>
+                    <li>Receive message in real-time</li>
+                    <li>Pin important message</li>
+                    <li>Unpin message</li>
+                    <li>Archive conversation</li>
+                    <li>Search messages</li>
+                    <li>Delete message</li>
+                    <li>Edit message</li>
+                    <li>See typing indicator</li>
+                    <li>See read receipts</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>4. Video Calls</h3>
+                <ul class="test-list">
+                    <li>Initiate video call</li>
+                    <li>Receive video call notification</li>
+                    <li>Accept video call</li>
+                    <li>Decline video call</li>
+                    <li>Audio quality during call</li>
+                    <li>Video quality during call</li>
+                    <li>Screen sharing (if available)</li>
+                    <li>Mute/unmute audio</li>
+                    <li>Turn camera on/off</li>
+                    <li>End call</li>
+                    <li>View call history</li>
+                    <li>Call duration tracking</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>5. Media & Photos</h3>
+                <ul class="test-list">
+                    <li>Upload single photo</li>
+                    <li>Upload multiple photos</li>
+                    <li>Upload video</li>
+                    <li>View photo gallery</li>
+                    <li>Theater mode (full-screen)</li>
+                    <li>Zoom in/out on photo</li>
+                    <li>Delete photo</li>
+                    <li>Share photo in message</li>
+                    <li>Add photo to timeline</li>
+                    <li>View photo metadata</li>
+                    <li>Download photo</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>6. Timeline & Memories</h3>
+                <ul class="test-list">
+                    <li>Create timeline entry</li>
+                    <li>Add photos to timeline</li>
+                    <li>Add text to timeline</li>
+                    <li>View timeline chronologically</li>
+                    <li>Filter timeline by date</li>
+                    <li>Share timeline link</li>
+                    <li>Access shared timeline publicly</li>
+                    <li>Comment on timeline entry</li>
+                    <li>Like timeline entry</li>
+                    <li>Edit timeline entry</li>
+                    <li>Delete timeline entry</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>7. Organization Features</h3>
+                <ul class="test-list">
+                    <li>Create event</li>
+                    <li>Set event date and time</li>
+                    <li>Invite family members to event</li>
+                    <li>View calendar</li>
+                    <li>Create announcement</li>
+                    <li>Edit announcement</li>
+                    <li>Delete announcement</li>
+                    <li>Create shopping list</li>
+                    <li>Add items to list</li>
+                    <li>Check off items</li>
+                    <li>Share list with family</li>
+                    <li>View daily digest</li>
+                    <li>View weekly digest</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>8. Settings & Preferences</h3>
+                <ul class="test-list">
+                    <li>Change language (if available)</li>
+                    <li>Update profile picture</li>
+                    <li>Edit profile information</li>
+                    <li>Change password</li>
+                    <li>Enable/disable notifications</li>
+                    <li>Set notification preferences</li>
+                    <li>Privacy settings</li>
+                    <li>Account deletion</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>9. Admin Features (Admin Users Only)</h3>
+                <ul class="test-list">
+                    <li>View families list</li>
+                    <li>View family details</li>
+                    <li>Manage family members</li>
+                    <li>View user accounts</li>
+                    <li>Suspend/unsuspend user</li>
+                    <li>View billing information</li>
+                    <li>Manage subscription plans</li>
+                    <li>View moderation queue</li>
+                    <li>Review flagged content</li>
+                    <li>View system logs</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>10. Cross-Device Testing</h3>
+                <ul class="test-list">
+                    <li>Desktop (Chrome, Firefox, Safari, Edge)</li>
+                    <li>Tablet (iPad, Android tablet)</li>
+                    <li>Mobile (iPhone, Android phone)</li>
+                    <li>Responsive design on all screen sizes</li>
+                    <li>Touch interactions on mobile</li>
+                    <li>Landscape and portrait orientation</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h3>11. Performance & Edge Cases</h3>
+                <ul class="test-list">
+                    <li>Slow network (throttle to 3G)</li>
+                    <li>Offline behavior</li>
+                    <li>Large file uploads (100MB+)</li>
+                    <li>Long conversations (1000+ messages)</li>
+                    <li>Multiple simultaneous users</li>
+                    <li>Rapid clicking/interactions</li>
+                    <li>Browser back/forward navigation</li>
+                    <li>Session timeout</li>
+                    <li>Concurrent logins</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="bug-reporting">
+            <h3>Bug Reporting Guidelines</h3>
+            <p>When you find a bug, please report it with the following information:</p>
+            
+            <div class="bug-info">
+                <strong>Required Information:</strong>
+                <ul>
+                    <li><strong>Bug Title:</strong> Clear, concise description</li>
+                    <li><strong>Severity:</strong> Critical / High / Medium / Low</li>
+                    <li><strong>Steps to Reproduce:</strong> Exact steps to trigger the bug</li>
+                    <li><strong>Expected Behavior:</strong> What should happen</li>
+                    <li><strong>Actual Behavior:</strong> What actually happened</li>
+                    <li><strong>Screenshots/Video:</strong> Visual evidence</li>
+                    <li><strong>Device & Browser:</strong> Device type, OS, browser version</li>
+                    <li><strong>Account Used:</strong> Which test account</li>
+                    <li><strong>Timestamp:</strong> When the bug occurred</li>
+                </ul>
+            </div>
+            
+            <strong>Severity Levels:</strong>
+            <div class="severity-levels">
+                <div class="severity critical">
+                    <strong>🔴 Critical</strong>
+                    <p>App crashes, data loss, security issue</p>
+                </div>
+                <div class="severity high">
+                    <strong>🟠 High</strong>
+                    <p>Feature doesn't work, major UX issue</p>
+                </div>
+                <div class="severity medium">
+                    <strong>🟡 Medium</strong>
+                    <p>Minor feature issue, workaround exists</p>
+                </div>
+                <div class="severity low">
+                    <strong>🟢 Low</strong>
+                    <p>UI polish, typo, minor inconvenience</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="contact-info">
+            <h3>Report Bugs To:</h3>
+            <p>📧 Email: <a href="mailto:testing@familyconnect.app">testing@familyconnect.app</a></p>
+            <p>Or use the in-app bug report button</p>
+        </section>
+        
+        <footer class="footer">
+            <p>Thank you for helping us improve Family Connect!</p>
+            <p>Your testing and feedback are invaluable to our success.</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.getElementById('date').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+</body>
+</html>

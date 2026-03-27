@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Connect - QA Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .tester-info {
+            background: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        
+        .tester-info h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-field label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #0066cc;
+        }
+        
+        .info-field input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #0066cc;
+            padding: 5px 0;
+            font-size: 0.95em;
+        }
+        
+        .category {
+            margin: 40px 0;
+            page-break-inside: avoid;
+        }
+        
+        .category-title {
+            background: #0066cc;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px 6px 0 0;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        
+        .category-content {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 20px;
+        }
+        
+        .test-item {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px 200px;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .test-number {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .notes-field {
+            border: none;
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+            font-size: 0.9em;
+            width: 100%;
+            font-family: inherit;
+        }
+        
+        .summary-section {
+            background: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 4px;
+            page-break-inside: avoid;
+        }
+        
+        .summary-section h2 {
+            color: #0066cc;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .summary-field {
+            margin: 20px 0;
+        }
+        
+        .summary-field label {
+            display: block;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 8px;
+        }
+        
+        .summary-field input[type="text"],
+        .summary-field input[type="number"],
+        .summary-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.95em;
+        }
+        
+        .summary-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .assessment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .assessment-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .assessment-option input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .assessment-option label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .signature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .signature-field {
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .print-button {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .print-button button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .print-button button:hover {
+            background: #0052a3;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #ddd;
+            color: #999;
+            font-size: 0.95em;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .print-button {
+                display: none;
+            }
+            
+            .category {
+                page-break-inside: avoid;
+            }
+            
+            .summary-section {
+                page-break-inside: avoid;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .test-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .checkbox-group {
+                justify-content: flex-start;
+            }
+            
+            .assessment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .signature-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Family Connect</h1>
+            <p class="subtitle">QA Testing Checklist</p>
+        </header>
+        
+        <div class="print-button">
+            <button onclick="window.print()">🖨️ Print as PDF</button>
+        </div>
+        
+        <div class="tester-info">
+            <h3>Tester Information</h3>
+            <div class="info-grid">
+                <div class="info-field">
+                    <label>Name:</label>
+                    <input type="text" placeholder="Your name">
+                </div>
+                <div class="info-field">
+                    <label>Date:</label>
+                    <input type="date">
+                </div>
+                <div class="info-field">
+                    <label>Device:</label>
+                    <input type="text" placeholder="e.g., iPhone 14, MacBook Pro">
+                </div>
+                <div class="info-field">
+                    <label>Browser:</label>
+                    <input type="text" placeholder="e.g., Chrome 120, Safari 17">
+                </div>
+                <div class="info-field">
+                    <label>OS Version:</label>
+                    <input type="text" placeholder="e.g., iOS 17, macOS 14">
+                </div>
+                <div class="info-field">
+                    <label>App Version:</label>
+                    <input type="text" placeholder="e.g., 1.0.0">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Authentication & Onboarding -->
+        <div class="category">
+            <div class="category-title">1. AUTHENTICATION & ONBOARDING</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Sign Up</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Email Verification</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Login</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Password Reset</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Create First Family</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Profile Setup</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Family Management -->
+        <div class="category">
+            <div class="category-title">2. FAMILY MANAGEMENT</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Create Family</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Invite Members</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Accept Invitation</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Assign Roles</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Change Roles</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Remove Members</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">7.</div>
+                        <div class="test-name">View Members List</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messaging -->
+        <div class="category">
+            <div class="category-title">3. MESSAGING</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Send Text Message</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Send with Emoji</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Send with Attachment</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Real-time Delivery</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Pin Message</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Archive Conversation</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">7.</div>
+                        <div class="test-name">Search Messages</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">8.</div>
+                        <div class="test-name">Delete Message</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Video Calls -->
+        <div class="category">
+            <div class="category-title">4. VIDEO CALLS</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Initiate Call</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Receive Call</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Accept Call</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Audio Quality</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Video Quality</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Mute/Unmute</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">7.</div>
+                        <div class="test-name">End Call</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">8.</div>
+                        <div class="test-name">Call History</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Media & Photos -->
+        <div class="category">
+            <div class="category-title">5. MEDIA & PHOTOS</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Upload Photo</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Upload Multiple</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">View Gallery</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Theater Mode</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Delete Photo</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Share Photo</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">7.</div>
+                        <div class="test-name">Download Photo</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline & Memories -->
+        <div class="category">
+            <div class="category-title">6. TIMELINE & MEMORIES</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Create Entry</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Add Photos</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">View Timeline</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Share Timeline Link</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Public Access</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Comment on Entry</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">7.</div>
+                        <div class="test-name">Edit Entry</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Organization -->
+        <div class="category">
+            <div class="category-title">7. ORGANIZATION</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Create Event</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">View Calendar</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Create Announcement</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Create Shopping List</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Add List Items</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">View Digest</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings & Preferences -->
+        <div class="category">
+            <div class="category-title">8. SETTINGS & PREFERENCES</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Change Language</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Update Profile</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Change Password</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Notification Settings</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Privacy Settings</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance & Edge Cases -->
+        <div class="category">
+            <div class="category-title">9. PERFORMANCE & EDGE CASES</div>
+            <div class="category-content">
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">1.</div>
+                        <div class="test-name">Slow Network (3G)</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">2.</div>
+                        <div class="test-name">Offline Behavior</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">3.</div>
+                        <div class="test-name">Large File Upload</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">4.</div>
+                        <div class="test-name">Long Conversations</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">5.</div>
+                        <div class="test-name">Multiple Users</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+                <div class="test-item">
+                    <div>
+                        <div class="test-number">6.</div>
+                        <div class="test-name">Session Timeout</div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> PASS</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> FAIL</label>
+                    </div>
+                    <input type="text" class="notes-field" placeholder="Notes...">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2>Testing Summary</h2>
+            
+            <div class="summary-field">
+                <label>Total Tests Passed:</label>
+                <input type="number" placeholder="0">
+            </div>
+            
+            <div class="summary-field">
+                <label>Total Tests:</label>
+                <input type="number" placeholder="0">
+            </div>
+            
+            <div class="summary-field">
+                <label>Pass Rate (%):</label>
+                <input type="number" placeholder="0" min="0" max="100">
+            </div>
+            
+            <div class="summary-field">
+                <label>Critical Issues Found:</label>
+                <textarea placeholder="List any critical issues..."></textarea>
+            </div>
+            
+            <div class="summary-field">
+                <label>High Priority Issues:</label>
+                <textarea placeholder="List any high priority issues..."></textarea>
+            </div>
+            
+            <div class="summary-field">
+                <label>Medium Priority Issues:</label>
+                <textarea placeholder="List any medium priority issues..."></textarea>
+            </div>
+            
+            <div class="summary-field">
+                <label>Overall Assessment:</label>
+                <div class="assessment-options">
+                    <div class="assessment-option">
+                        <input type="radio" id="ready" name="assessment" value="ready">
+                        <label for="ready">Ready for Release</label>
+                    </div>
+                    <div class="assessment-option">
+                        <input type="radio" id="minor" name="assessment" value="minor">
+                        <label for="minor">Ready with Minor Fixes</label>
+                    </div>
+                    <div class="assessment-option">
+                        <input type="radio" id="more" name="assessment" value="more">
+                        <label for="more">Needs More Testing</label>
+                    </div>
+                    <div class="assessment-option">
+                        <input type="radio" id="not-ready" name="assessment" value="not-ready">
+                        <label for="not-ready">Not Ready for Release</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-section">
+                <div class="signature-field">
+                    <p>Tester Signature</p>
+                </div>
+                <div class="signature-field">
+                    <p>Date</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>Thank you for your thorough testing and feedback!</p>
+            <p>Your attention to detail helps us deliver a quality product.</p>
+        </footer>
+    </div>
+</body>
+</html>

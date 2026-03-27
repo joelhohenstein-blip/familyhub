@@ -1,0 +1,1 @@
+import{P as t,t as e}from"./jsx-runtime-DuEApJdL.js";var r=e(),s=t(function(){return(0,r.jsxs)("div",{children:[(0,r.jsx)("h1",{children:"Test Data Creation"}),(0,r.jsx)("form",{method:"POST",children:(0,r.jsx)("button",{type:"submit",children:"Create Test Orders"})})]})});export{s as default};

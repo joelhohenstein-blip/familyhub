@@ -1,0 +1,205 @@
+{
+  "login": {
+    "welcome": "Welcome to Family Hub",
+    "subtitle": "Connect with your loved ones",
+    "email": "Email address",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "errors": {
+      "invalidEmail": "Please enter a valid email",
+      "passwordRequired": "Password is required",
+      "signInFailed": "Sign in failed. Please try again."
+    }
+  },
+  "home": {
+    "title": "Family Hub",
+    "description": "Your connected family space",
+    "welcome": "Welcome to Your Family Hub",
+    "subtitle": "Stay connected with your family",
+    "features": {
+      "messaging": {
+        "title": "Message Board",
+        "description": "Share updates and stay in touch"
+      },
+      "video": {
+        "title": "Video & Audio",
+        "description": "Two-way video and audio calls"
+      },
+      "media": {
+        "title": "Media Library",
+        "description": "Upload and share photos and videos"
+      },
+      "entertainment": {
+        "title": "Movie Theater",
+        "description": "Watch free streaming content"
+      },
+      "weather": {
+        "title": "Local Weather",
+        "description": "Stay informed about local conditions"
+      }
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "messages": "Messages",
+    "video": "Video Call",
+    "media": "Media",
+    "movies": "Movies",
+    "settings": "Settings",
+    "logout": "Log Out",
+    "profile": "Profile"
+  },
+  "media": {
+    "title": "Photo & Video Gallery",
+    "upload": "Upload Media",
+    "uploadMedia": "Upload Photos or Videos",
+    "selectFile": "Select a file",
+    "dragDrop": "Drag and drop files here or click to select",
+    "playVideo": "Play Video",
+    "viewGallery": "View Gallery",
+    "createAlbum": "Create Album",
+    "moveToAlbum": "Move to Album",
+    "album": "Album",
+    "albums": "Albums",
+    "photos": "Photos",
+    "videos": "Videos",
+    "allMedia": "All Media",
+    "emptyGallery": "No photos or videos yet. Start by uploading some memories!",
+    "emptyAlbum": "This album is empty. Move some photos or videos here.",
+    "watchHistory": "Watch History",
+    "lastWatchedPosition": "Last watched",
+    "videoPlayback": "Video Playback",
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit Fullscreen",
+      "volume": "Volume"
+    },
+    "errors": {
+      "unsupportedFileType": "Unsupported file type. Please upload JPEG, PNG, GIF, WebP, SVG, MP4, WebM, OGG, MOV, or AVI files.",
+      "fileSizeExceeded": "File size exceeds the 10MB limit",
+      "uploadFailed": "Upload failed. Please try again.",
+      "deleteFailed": "Failed to delete media",
+      "invalidAlbumName": "Album name is required",
+      "albumCreationFailed": "Failed to create album",
+      "playbackError": "Error playing video. Please try again.",
+      "retryPlayback": "Retry"
+    },
+    "confirmations": {
+      "deleteMedia": "Are you sure you want to delete this media?",
+      "deleteAlbum": "Are you sure you want to delete this album?"
+    },
+    "filters": {
+      "all": "All Media",
+      "images": "Photos Only",
+      "videos": "Videos Only"
+    },
+    "pagination": {
+      "loadMore": "Load More",
+      "noMore": "No more media to load"
+    }
+  },
+  "buttons": {
+    "startCall": "Start Video Call",
+    "sendMessage": "Send Message",
+    "upload": "Upload",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "next": "Next",
+    "back": "Back"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Are you sure?",
+    "language": "Language",
+    "selectLanguage": "Select Language"
+  },
+  "notifications": {
+    "languageFallback": "Your browser language is not supported. English will be used."
+  },
+  "onboarding": {
+    "title": "Welcome to FamilyHub",
+    "subtitle": "Let's set up your family. Follow these steps to get started.",
+    "steps": {
+      "family": "Create Family",
+      "avatar": "Add Avatar",
+      "invite": "Invite Members",
+      "roles": "Set Member Roles"
+    },
+    "family": {
+      "title": "Create Your Family",
+      "subtitle": "Start by setting up your family name and description"
+    },
+    "avatar": {
+      "title": "Add Family Avatar",
+      "description": "Upload a photo to represent your family (optional)."
+    },
+    "invite": {
+      "title": "Invite Family Members",
+      "description": "Invite people to join your family (optional - you can add them later)."
+    },
+    "roles": {
+      "title": "Set Member Roles",
+      "description": "Customize roles and permissions for each member"
+    },
+    "complete": {
+      "title": "All Set!",
+      "description": "Your family is ready. You can now access your family hub and manage members."
+    },
+    "skip": "Skip for Now",
+    "viewFamily": "View Your Family"
+  },
+  "family": {
+    "avatar": "Family Avatar",
+    "surname": "Family Surname",
+    "description": "Family Description"
+  },
+  "invite": {
+    "email": "Email Address",
+    "add": "Add",
+    "list": "Invited Emails",
+    "role": "Role"
+  },
+  "roles": {
+    "member": "Member",
+    "guest": "Guest",
+    "admin": "Admin"
+  },
+  "invite": {
+    "processing": "Processing Your Invitation",
+    "pleasewait": "Please wait while we add you to the family...",
+    "success": "Welcome!",
+    "successMessage": "You have successfully joined the family. Redirecting you to your family page...",
+    "error": "Invitation Invalid",
+    "errorMessage": "This invitation link is invalid, expired, or has already been used. Please ask the family admin to send you a new invitation."
+  },
+  "weather": {
+    "title": "Weather",
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "forecast": "4-Day Forecast",
+    "wind": "Wind Speed",
+    "humidity": "Humidity",
+    "feelsLike": "Feels Like",
+    "cachedData": "Data cached from 5 minutes ago",
+    "noData": "No weather data available. Please enable location access.",
+    "enterLocation": "Enter Location",
+    "searchPlaceholder": "Search for a city or location",
+    "search": "Search",
+    "searching": "Searching...",
+    "locationNotFound": "Location not found. Please try another search.",
+    "orEnableLocation": "Or enable browser location access to auto-detect your location."
+  }
+}

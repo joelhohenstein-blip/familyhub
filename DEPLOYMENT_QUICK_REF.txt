@@ -1,0 +1,114 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🚀 FAMILYHUB DEPLOYMENT QUICK REF                        ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⏱️  TIME TO LIVE: ~30 minutes
+📍 PLATFORM: Railway.app
+🎯 STATUS: READY TO DEPLOY
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5-STEP DEPLOYMENT CHECKLIST
+
+  ☐ STEP 1: Create Railway account (https://railway.app)
+  ☐ STEP 2: Connect GitHub repo
+  ☐ STEP 3: Add environment variables
+  ☐ STEP 4: Deploy (click button or CLI)
+  ☐ STEP 5: Verify live URL works
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+REQUIRED ENVIRONMENT VARIABLES
+
+  DATABASE_URL=postgresql://...
+  CLERK_SECRET_KEY=sk_test_...
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+  NEXT_PUBLIC_API_URL=https://your-domain.railway.app
+  NODE_ENV=production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DEPLOYMENT COMMANDS
+
+  # Option A: Auto-deploy from GitHub (recommended)
+  1. Connect repo in Railway dashboard
+  2. Select main branch
+  3. Click "Deploy"
+
+  # Option B: Manual deploy with CLI
+  npm install -g @railway/cli
+  railway login
+  railway link
+  railway up
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VERIFICATION TESTS
+
+  ✓ App loads: https://your-domain.railway.app
+  ✓ Sign up works
+  ✓ Login works
+  ✓ Dashboard loads data
+  ✓ API responds: /api/health
+  ✓ No console errors
+  ✓ Mobile responsive
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TROUBLESHOOTING
+
+  Build fails?
+    → Check railway logs
+    → Verify env vars are set
+    → Check Node version compatibility
+
+  Database error?
+    → Verify DATABASE_URL
+    → Check migrations ran
+    → Verify PostgreSQL plugin added
+
+  Auth not working?
+    → Check CLERK_SECRET_KEY
+    → Verify NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    → Check Clerk dashboard
+
+  Blank page?
+    → Check browser console
+    → Verify NEXT_PUBLIC_API_URL
+    → Check railway logs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USEFUL LINKS
+
+  Railway Dashboard:    https://railway.app/dashboard
+  Clerk Dashboard:     https://dashboard.clerk.com
+  Railway Docs:        https://docs.railway.app
+  Next.js Docs:        https://nextjs.org/docs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PERFORMANCE TARGETS
+
+  ✓ Lighthouse Score: 90+
+  ✓ First Contentful Paint: < 2s
+  ✓ Largest Contentful Paint: < 2.5s
+  ✓ API Response Time: < 200ms
+  ✓ Uptime: > 99.9%
+  ✓ Error Rate: < 0.1%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 YOU'RE READY TO DEPLOY!
+
+  1. Open https://railway.app
+  2. Create new project
+  3. Connect GitHub
+  4. Add env vars
+  5. Deploy
+  6. Share your live URL
+
+  Time to live: ~30 minutes
+  Status: READY ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

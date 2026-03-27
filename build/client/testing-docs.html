@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Connect - Testing Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.05em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .doc-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+        
+        .doc-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .doc-card h2 {
+            font-size: 1.8em;
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        
+        .doc-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .doc-features {
+            list-style: none;
+            margin: 20px 0;
+            padding: 0;
+        }
+        
+        .doc-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .doc-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .doc-button {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .doc-button:hover {
+            background: #0052a3;
+        }
+        
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .info-box h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .info-box p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .info-box strong {
+            color: #0066cc;
+        }
+        
+        .contact-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .contact-section h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .contact-section p {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        
+        .contact-section a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .contact-section a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                font-size: 1.1em;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .doc-card {
+                padding: 30px;
+            }
+            
+            .doc-card h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Family Connect</h1>
+            <p class="subtitle">Testing Documentation</p>
+            <p class="description">Complete guides and checklists for comprehensive QA testing</p>
+        </header>
+        
+        <div class="docs-grid">
+            <!-- Testing Guide Card -->
+            <div class="doc-card">
+                <div class="doc-icon">📋</div>
+                <h2>Testing Guide</h2>
+                <p>Comprehensive guide covering all features, testing procedures, and bug reporting guidelines.</p>
+                <ul class="doc-features">
+                    <li>Quick start instructions</li>
+                    <li>Complete feature checklist</li>
+                    <li>Testing procedures</li>
+                    <li>Bug reporting guidelines</li>
+                    <li>Severity levels</li>
+                    <li>Contact information</li>
+                </ul>
+                <a href="/testing-guide.html" class="doc-button">📖 Open Guide</a>
+            </div>
+            
+            <!-- QA Checklist Card -->
+            <div class="doc-card">
+                <div class="doc-icon">✅</div>
+                <h2>QA Checklist</h2>
+                <p>Interactive checklist for tracking test results across all feature categories.</p>
+                <ul class="doc-features">
+                    <li>Tester information form</li>
+                    <li>9 feature categories</li>
+                    <li>Pass/Fail tracking</li>
+                    <li>Notes for each test</li>
+                    <li>Summary section</li>
+                    <li>Printable format</li>
+                </ul>
+                <a href="/qa-checklist.html" class="doc-button">✓ Open Checklist</a>
+            </div>
+        </div>
+        
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>📌 How to Use These Documents</h3>
+            <p><strong>Step 1:</strong> Open the Testing Guide to understand all features and testing procedures.</p>
+            <p><strong>Step 2:</strong> Use the QA Checklist to track your testing progress and results.</p>
+            <p><strong>Step 3:</strong> Print both documents or save as PDF for offline reference.</p>
+            <p><strong>Step 4:</strong> Report any bugs found using the guidelines in the Testing Guide.</p>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h3>🐛 Found a Bug?</h3>
+            <p>Report issues to: <a href="mailto:testing@familyconnect.app">testing@familyconnect.app</a></p>
+            <p>Or use the in-app bug report button</p>
+            <p style="margin-top: 20px; font-size: 0.95em; color: #999;">
+                Thank you for helping us improve Family Connect!
+            </p>
+        </div>
+    </div>
+</body>
+</html>
